@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laptop Gaming - Laptop Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    /* ------------------- CÀI ĐẶT CHUNG ------------------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; overflow-x: hidden; }
+
+    /* ------------------- NAVBAR ------------------- */
+    .navbar { background: #1a1a1a; color: white; padding: 0 40px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .logo { font-size: 1.9rem; font-weight: bold; color: #d10000; cursor: pointer; text-decoration: none; }
+    .nav-menu { display: flex; gap: 32px; list-style: none; }
+    .nav-menu a { color: white; text-decoration: none; font-size: 1.05rem; transition: color 0.2s; }
+    .nav-menu a:hover { color: #d10000; }
+    .search-bar { display: flex; align-items: center; background: #333; border-radius: 30px; padding: 8px 16px; width: 340px; transition: width 0.3s; }
+    .search-bar:hover { width: 380px; }
+    .search-bar input { background: transparent; border: none; outline: none; color: white; font-size: 1rem; width: 100%; margin-left: 8px; }
+    .nav-icons { display: flex; gap: 24px; font-size: 1.3rem; }
+    .nav-icons a { color: white; text-decoration: none; position: relative; }
+    .cart-count { position: absolute; top: -8px; right: -10px; background: #ff3040; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ------------------- BREADCRUMB ------------------- */
+    .breadcrumb { max-width: 1400px; margin: 20px auto 10px; padding: 0 30px; font-size: 0.95rem; color: #666; }
+    .breadcrumb a { color: #d10000; text-decoration: none; font-weight: 500; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; color: #999; }
+
+    /* ------------------- SECTION: THƯƠNG HIỆU ------------------- */
+    .brand-section { max-width: 1400px; margin: 20px auto 40px; padding: 0 30px; }
+    .section-title-cat { font-size: 1.5rem; font-weight: bold; color: #1a1a1a; margin-bottom: 20px; text-transform: uppercase; border-left: 5px solid #d10000; padding-left: 10px; }
+
+    .brand-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; }
+    .brand-box { background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 25px 10px; text-align: center; font-size: 1.2rem; font-weight: 800; color: #333; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .brand-box i { font-size: 2rem; color: #666; transition: 0.3s; }
+    .brand-box:hover { border-color: #d10000; color: #d10000; transform: translateY(-5px); box-shadow: 0 8px 15px rgba(209, 0, 0, 0.1); }
+    .brand-box:hover i { color: #d10000; }
+
+    /* ------------------- CẤU TRÚC CARD SẢN PHẨM CHUNG ------------------- */
+    .product-card {
+      background: white; border: 1px solid #f0f0f0; border-radius: 12px;
+      padding: 15px; transition: all 0.3s; text-align: center; position: relative;
+    }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #d10000; z-index: 2; }
+
+    .badge-hot { position: absolute; top: 12px; left: 12px; background: #d10000; color: white; padding: 4px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 5px; z-index: 10; text-transform: uppercase; }
+    .product-img { width: 100%; height: 200px; margin-bottom: 15px; overflow: hidden; }
+    .product-img img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
+    .product-card:hover .product-img img { transform: scale(1.05); }
+    .product-name { font-size: 1rem; font-weight: 600; color: #333; margin-bottom: 12px; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.4; }
+    .product-price { color: #d10000; font-size: 1.25rem; font-weight: bold; margin-bottom: 15px; }
+    .buy-btn { width: 100%; background: white; color: #d10000; border: 1px solid #d10000; padding: 10px 0; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+    .buy-btn:hover { background: #d10000; color: white; }
+
+    /* ------------------- CỤM SLIDER SẢN PHẨM NỔI BẬT ------------------- */
+    .product-section { max-width: 1400px; margin: 0 auto 40px; padding: 0 30px; }
+    .slider-wrapper { position: relative; margin-top: 20px; }
+    .slider-btn { position: absolute; top: 40%; transform: translateY(-50%); width: 45px; height: 45px; border-radius: 50%; background: white; color: #d10000; border: 1px solid #e0e0e0; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+    .slider-btn:hover { background: #d10000; color: white; border-color: #d10000; transform: translateY(-50%) scale(1.1); }
+    .prev-btn { left: -22px; } .next-btn { right: -22px; }
+
+    .product-track { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; scroll-snap-type: x mandatory; padding: 10px 5px 30px 5px; -ms-overflow-style: none; scrollbar-width: none; }
+    .product-track::-webkit-scrollbar { display: none; }
+
+    /* Ghi đè chỉ áp dụng cho Card nằm trong Slider */
+    .product-track .product-card {
+      flex: 0 0 calc(25% - 15px);
+      scroll-snap-align: start;
+      min-width: 260px;
+    }
+
+    /* ------------------- GRID TẤT CẢ SẢN PHẨM ------------------- */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* ================= BỘ LỌC SẢN PHẨM ================= */
+    .filter-wrapper { max-width: 1400px; margin: 0 auto 30px; padding: 0 30px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+
+    .filter-dropdown { position: relative; }
+    .filter-btn-box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px 20px; font-size: 1rem; font-weight: 600; color: #444; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+    .filter-btn-box:hover { border-color: #d10000; color: #d10000; }
+
+    .filter-popup {
+      position: absolute; top: 100%; left: 0; margin-top: 10px; width: max-content;
+      background: white; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      padding: 20px; z-index: 100; opacity: 0; visibility: hidden; transform: translateY(10px);
+      transition: all 0.3s ease; border: 1px solid #eee; display: flex; gap: 30px;
+    }
+
+    .filter-popup::before { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px; background: transparent; }
+    .filter-dropdown:hover .filter-popup { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    .filter-group { display: flex; flex-direction: column; gap: 10px; }
+    .filter-group strong { border-bottom: 2px solid #d10000; padding-bottom: 5px; margin-bottom: 5px; color: #333; }
+    .filter-item { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; color: #555; cursor: pointer; }
+    .filter-item input { accent-color: #d10000; cursor: pointer; width: 16px; height: 16px; }
+
+    /* Thanh Trượt Giá */
+    .price-filter-box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    .price-labels { font-weight: bold; color: #333; font-size: 0.95rem; min-width: 130px; }
+    .price-labels span { color: #d10000; }
+
+    .range-slider-container { position: relative; width: 250px; height: 35px; display: flex; align-items: center; }
+    .slider-track { position: absolute; width: 100%; height: 6px; background: #ddd; border-radius: 3px; z-index: 1; }
+    .slider-track-fill { position: absolute; height: 6px; background: #d10000; border-radius: 3px; z-index: 2; left: 0%; right: 0%; }
+
+    .range-slider-container input[type="range"] {
+      position: absolute; width: 100%; height: 6px; background: none; pointer-events: none;
+      -webkit-appearance: none; z-index: 3; outline: none; margin: 0;
+    }
+    .range-slider-container input[type="range"]::-webkit-slider-thumb {
+      height: 20px; width: 20px; border-radius: 50%; background: #d10000; border: 2px solid white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3); pointer-events: auto; -webkit-appearance: none; cursor: pointer;
+    }
+
+    /* ------------------- FOOTER ------------------- */
+    .footer-section { background: #1a1a1a; color: #ccc; padding: 60px 0 20px 0; margin-top: 50px; font-size: 0.95rem; border-top: 4px solid #d10000; }
+    .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    .footer-col h3 { color: white; margin-bottom: 25px; font-size: 1.2rem; position: relative; padding-bottom: 10px; text-transform: uppercase; }
+    .footer-col h3::after { content: ""; position: absolute; left: 0; bottom: 0; width: 40px; height: 3px; background: #d10000; border-radius: 5px; }
+    .footer-logo { font-size: 2rem; font-weight: bold; color: #d10000; margin-bottom: 15px; display: inline-block; text-decoration: none; }
+    .footer-slogan { line-height: 1.6; margin-bottom: 20px; color: #aaa; }
+    .social-icons { display: flex; gap: 15px; }
+    .social-icons a { color: white; background: #333; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s; text-decoration: none; }
+    .social-icons a:hover { background: #d10000; transform: translateY(-3px); }
+    .contact-info p { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; line-height: 1.5; }
+    .contact-info i { color: #d10000; font-size: 1.1rem; margin-top: 3px; width: 20px; text-align: center; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 12px; }
+    .footer-col ul li a { color: #aaa; text-decoration: none; transition: 0.3s; display: inline-block; }
+    .footer-col ul li a:hover { color: #d10000; transform: translateX(5px); }
+    .payment-methods { display: flex; flex-wrap: wrap; gap: 10px; }
+    .payment-methods img { width: 50px; height: 32px; object-fit: contain; background: white; padding: 3px; border-radius: 4px; border: 1px solid #444; }
+    .footer-bottom { text-align: center; padding-top: 20px; margin-top: 40px; border-top: 1px solid #333; font-size: 0.9rem; color: #888; }
+
+    /* ------------------- RESPONSIVE ------------------- */
+    @media (max-width: 1024px) {
+      .brand-grid-6 { grid-template-columns: repeat(3, 1fr); }
+      .product-track .product-card { flex: 0 0 calc(50% - 10px); } /* Slider 2 items */
+      .product-grid { grid-template-columns: repeat(2, 1fr); } /* Grid 2 items */
+      .footer-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .brand-grid-6 { grid-template-columns: repeat(2, 1fr); }
+      .product-track .product-card { flex: 0 0 100%; } /* Slider 1 item */
+      .product-grid { grid-template-columns: 1fr; } /* Grid 1 item */
+      .footer-container { grid-template-columns: 1fr; }
+      .prev-btn { left: 0; }
+      .next-btn { right: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">LaptopStore</a>
+    <ul class="nav-menu">
+      <li><a href="index.html">Trang chủ</a></li>
+      <li><a href="#">Khuyến mãi</a></li>
+      <li><a href="#">Tin công nghệ</a></li>
+    </ul>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Bạn cần tìm laptop gì?">
+    </div>
+    <div class="nav-icons">
+      <a href="#"><i class="fas fa-shopping-cart"></i><span class="cart-count">3</span></a>
+      <a href="#"><i class="fas fa-user"></i></a>
+    </div>
+  </nav>
+
+  <div class="breadcrumb"><a href="index.html"><i class="fas fa-home"></i> Trang chủ</a> <span>/</span> Laptop Gaming</div>
+
+  <section class="brand-section">
+    <h2 class="section-title-cat">Chọn Theo Thương Hiệu</h2>
+    <div class="brand-grid-6">
+      <a href="#" class="brand-box"><i class="fas fa-laptop"></i> ASUS</a>
+      <a href="#" class="brand-box"><i class="fas fa-laptop-code"></i> LENOVO</a>
+      <a href="#" class="brand-box"><i class="fas fa-gamepad"></i> MSI</a>
+      <a href="#" class="brand-box"><i class="fas fa-desktop"></i> DELL</a>
+      <a href="#" class="brand-box"><i class="fas fa-microchip"></i> HP</a>
+      <a href="#" class="brand-box"><i class="fas fa-server"></i> GIGABYTE</a>
+    </div>
+  </section>
+
+  <section class="product-section">
+    <h2 class="section-title-cat">Sản Phẩm Nổi Bật</h2>
+    <div class="slider-wrapper">
+      <button class="slider-btn prev-btn" id="prevHotBtn"><i class="fas fa-chevron-left"></i></button>
+
+      <div class="product-track" id="hotTrack">
+        <div class="product-card">
+          <span class="badge-hot">Bán chạy</span>
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info">
+            <h3 class="product-name">Lenovo Legion 5 Pro 2024 i9-14900HX</h3>
+            <p class="product-price">35.990.000₫</p>
+            <button class="buy-btn">Thêm vào giỏ</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <span class="badge-hot">Mới về</span>
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info">
+            <h3 class="product-name">ASUS ROG Strix G16 G614J RTX 4060</h3>
+            <p class="product-price">32.450.000₫</p>
+            <button class="buy-btn">Thêm vào giỏ</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info">
+            <h3 class="product-name">Dell Alienware m16 R2 Ultra 7 155H</h3>
+            <p class="product-price">48.200.000₫</p>
+            <button class="buy-btn">Thêm vào giỏ</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <span class="badge-hot">-15%</span>
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info">
+            <h3 class="product-name">MSI Katana 15 B13VFK i7-13620H</h3>
+            <p class="product-price">29.490.000₫</p>
+            <button class="buy-btn">Thêm vào giỏ</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1629131726692-1accd0c53ce0?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info">
+            <h3 class="product-name">Acer Predator Helios Neo 16 2024</h3>
+            <p class="product-price">34.990.000₫</p>
+            <button class="buy-btn">Thêm vào giỏ</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="slider-btn next-btn" id="nextHotBtn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </section>
+
+  <div class="filter-wrapper">
+
+    <div class="filter-dropdown">
+      <div class="filter-btn-box"><i class="fas fa-filter"></i> Bộ lọc <i class="fas fa-chevron-down"></i></div>
+      <div class="filter-popup">
+        <div class="filter-group">
+          <strong>RAM</strong>
+          <label class="filter-item"><input type="checkbox"> 4GB</label>
+          <label class="filter-item"><input type="checkbox"> 6GB</label>
+          <label class="filter-item"><input type="checkbox"> 8GB</label>
+          <label class="filter-item"><input type="checkbox"> 12GB</label>
+          <label class="filter-item"><input type="checkbox"> 16GB</label>
+        </div>
+        <div class="filter-group">
+          <strong>Ổ Cứng</strong>
+          <label class="filter-item"><input type="checkbox"> 256GB SSD</label>
+          <label class="filter-item"><input type="checkbox"> 512GB SSD</label>
+          <label class="filter-item"><input type="checkbox"> 1TB SSD</label>
+          <label class="filter-item"><input type="checkbox"> 2TB SSD</label>
+        </div>
+        <div class="filter-group">
+          <strong>CPU</strong>
+          <label class="filter-item"><input type="checkbox"> Intel Core i5</label>
+          <label class="filter-item"><input type="checkbox"> Intel Core i7</label>
+          <label class="filter-item"><input type="checkbox"> Intel Core i9</label>
+          <label class="filter-item"><input type="checkbox"> AMD Ryzen 5</label>
+          <label class="filter-item"><input type="checkbox"> AMD Ryzen 7</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-dropdown">
+      <div class="filter-btn-box">Thương hiệu <i class="fas fa-chevron-down"></i></div>
+      <div class="filter-popup" style="gap: 15px; flex-direction: column;">
+        <label class="filter-item"><input type="checkbox"> ASUS</label>
+        <label class="filter-item"><input type="checkbox"> LENOVO</label>
+        <label class="filter-item"><input type="checkbox"> DELL</label>
+        <label class="filter-item"><input type="checkbox"> HP</label>
+        <label class="filter-item"><input type="checkbox"> MSI</label>
+        <label class="filter-item"><input type="checkbox"> GIGABYTE</label>
+      </div>
+    </div>
+
+    <div class="price-filter-box">
+      <div class="price-labels">
+        Giá: <span id="val1">0</span>Tr - <span id="val2">200</span>Tr
+      </div>
+      <div class="range-slider-container">
+        <div class="slider-track"></div>
+        <div class="slider-track-fill"></div>
+        <input type="range" min="0" max="200" value="0" id="slider-1" step="5">
+        <input type="range" min="0" max="200" value="200" id="slider-2" step="5">
+      </div>
+    </div>
+  </div>
+
+  <section class="product-section">
+    <h2 class="section-title-cat" style="font-size: 1.3rem; border-left: none; padding-left:0;">Tất cả Laptop Gaming</h2>
+
+    <div class="product-grid">
+       <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info"><h3 class="product-name">Lenovo LOQ 15IRX9 RTX 4050</h3><p class="product-price">25.990.000₫</p><button class="buy-btn">Thêm vào giỏ</button></div>
+       </div>
+       <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info"><h3 class="product-name">ASUS TUF Gaming A15 FA507</h3><p class="product-price">22.450.000₫</p><button class="buy-btn">Thêm vào giỏ</button></div>
+       </div>
+       <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info"><h3 class="product-name">MSI Cyborg 15 A12UCX</h3><p class="product-price">18.490.000₫</p><button class="buy-btn">Thêm vào giỏ</button></div>
+       </div>
+       <div class="product-card">
+          <div class="product-img"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="Laptop"></div>
+          <div class="product-info"><h3 class="product-name">HP Victus 15 Ryzen 5</h3><p class="product-price">20.200.000₫</p><button class="buy-btn">Thêm vào giỏ</button></div>
+       </div>
+    </div>
+  </section>
+
+  <footer class="footer-section">
+    <div class="footer-container">
+      <div class="footer-col"><a href="index.html" class="footer-logo">LaptopStore</a><p class="footer-slogan">Hệ thống bán lẻ Laptop uy tín hàng đầu Việt Nam.</p></div>
+      <div class="footer-col contact-info"><h3>Liên hệ</h3><p><i class="fas fa-phone-alt"></i> 1800 1234</p><p><i class="fas fa-envelope"></i> cskh@laptopstore.vn</p></div>
+      <div class="footer-col"><h3>Danh mục</h3><ul><li><a href="#">Laptop Gaming</a></li><li><a href="#">MacBook</a></li></ul></div>
+      <div class="footer-col"><h3>Thanh toán</h3><div class="payment-methods"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Master"></div></div>
+    </div>
+  </footer>
+
+  <script>
+    // 1. Slider Sản Phẩm Nổi Bật
+    const track = document.getElementById('hotTrack');
+    document.getElementById('nextHotBtn').addEventListener('click', () => {
+      const cardWidth = track.querySelector('.product-card').offsetWidth + 20;
+      track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+    document.getElementById('prevHotBtn').addEventListener('click', () => {
+      const cardWidth = track.querySelector('.product-card').offsetWidth + 20;
+      track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+
+    // 2. Logic Dual Range Slider
+    let sliderOne = document.getElementById("slider-1");
+    let sliderTwo = document.getElementById("slider-2");
+    let displayValOne = document.getElementById("val1");
+    let displayValTwo = document.getElementById("val2");
+    let minGap = 5;
+    let sliderTrackFill = document.querySelector(".slider-track-fill");
+    let sliderMaxValue = document.getElementById("slider-1").max;
+
+    function slideOne() {
+        if(parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
+            sliderOne.value = parseInt(sliderTwo.value) - minGap;
+        }
+        displayValOne.textContent = sliderOne.value;
+        fillColor();
+    }
+
+    function slideTwo() {
+        if(parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
+            sliderTwo.value = parseInt(sliderOne.value) + minGap;
+        }
+        displayValTwo.textContent = sliderTwo.value;
+        fillColor();
+    }
+
+    function fillColor() {
+        let percent1 = (sliderOne.value / sliderMaxValue) * 100;
+        let percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+        sliderTrackFill.style.left = percent1 + "%";
+        sliderTrackFill.style.width = (percent2 - percent1) + "%";
+    }
+
+    sliderOne.addEventListener("input", slideOne);
+    sliderTwo.addEventListener("input", slideTwo);
+    fillColor();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+  .footer-section { background: #1a1a1a; color: #ccc; padding: 60px 0 20px 0; margin-top: 50px; font-size: 0.95rem; }
+    .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+
+    .footer-col h3 { color: white; margin-bottom: 25px; font-size: 1.2rem; position: relative; padding-bottom: 10px; text-transform: uppercase; }
+    .footer-col h3::after { content: ""; position: absolute; left: 0; bottom: 0; width: 40px; height: 3px; background: #d10000; border-radius: 5px; }
+
+    .footer-logo { font-size: 2rem; font-weight: bold; color: #d10000; margin-bottom: 15px; display: inline-block; text-decoration: none; }
+    .footer-slogan { line-height: 1.6; margin-bottom: 20px; color: #aaa; }
+    .social-icons { display: flex; gap: 15px; }
+    .social-icons a { color: white; background: #333; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s; text-decoration: none; }
+    .social-icons a:hover { background: #d10000; transform: translateY(-3px); }
+
+    .contact-info p { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; line-height: 1.5; }
+    .contact-info i { color: #d10000; font-size: 1.1rem; margin-top: 3px; width: 20px; text-align: center; }
+
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 12px; }
+    .footer-col ul li a { color: #aaa; text-decoration: none; transition: 0.3s; display: inline-block; }
+    .footer-col ul li a:hover { color: #d10000; transform: translateX(5px); }
+
+    .payment-methods { display: flex; flex-wrap: wrap; gap: 10px; }
+    .payment-methods img { width: 50px; height: 32px; object-fit: contain; background: white; padding: 3px; border-radius: 4px; border: 1px solid #444; }
+
+    .footer-bottom { text-align: center; padding-top: 20px; margin-top: 40px; border-top: 1px solid #333; font-size: 0.9rem; color: #888; }
+

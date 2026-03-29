@@ -1,0 +1,134 @@
+
+    /* ------------------- CÀI ĐẶT CHUNG ------------------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; overflow-x: hidden; }
+
+    /* ------------------- NAVBAR ------------------- */
+    .navbar { background: #1a1a1a; color: white; padding: 0 40px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .logo { font-size: 1.9rem; font-weight: bold; color: #d10000; cursor: pointer; }
+    .nav-menu { display: flex; gap: 32px; list-style: none; }
+    .nav-menu a { color: white; text-decoration: none; font-size: 1.05rem; transition: color 0.2s; }
+    .nav-menu a:hover { color: #d10000; }
+    .search-bar { display: flex; align-items: center; background: #333; border-radius: 30px; padding: 8px 16px; width: 340px; transition: width 0.3s; }
+    .search-bar:hover { width: 380px; }
+    .search-bar input { background: transparent; border: none; outline: none; color: white; font-size: 1rem; width: 100%; margin-left: 8px; }
+    .nav-icons { display: flex; gap: 24px; font-size: 1.3rem; }
+    .nav-icons a { color: white; text-decoration: none; position: relative; }
+    .cart-count { position: absolute; top: -8px; right: -10px; background: #ff3040; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ------------------- MAIN CONTENT (S1, S2, S3) ------------------- */
+    .main-container { max-width: 1400px; margin: 30px auto; padding: 0 30px; display: flex; gap: 18px; align-items: flex-start; }
+
+    /* Sidebar - Section 1 */
+    .sidebar { width: 250px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 20px; position: relative; }
+    .sidebar h2 { font-size: 1.3rem; margin-bottom: 18px; color: #1a1a1a; border-bottom: 2px solid #d10000; padding-bottom: 10px; }
+    .category-list { list-style: none; }
+    .category-list li { padding: 12px 0; border-bottom: 1px solid #eee; }
+    .category-list a { text-decoration: none; color: #444; display: block; transition: 0.2s; }
+    .category-list a:hover { color: #d10000; padding-left: 5px; }
+
+    /* Submenu Popup (CSS được tối ưu cho JS) */
+    .has-submenu .submenu {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 250px;
+      width: 820px;
+      min-height: 100%;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 30px;
+      z-index: 9999;
+      transform: translateX(10px);
+      transition: all 0.3s ease;
+    }
+
+    /* Cây cầu tàng hình nối giữa chữ và menu để chống trượt chuột */
+    .has-submenu .submenu::before { content: ""; position: absolute; top: 0; left: -15px; width: 15px; height: 100%; background: transparent; }
+    .brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+    .brand strong { display: block; font-size: 1.1rem; border-bottom: 2px solid #d10000; margin-bottom: 10px; padding-bottom: 5px; }
+    .brand ul { list-style: none; }
+    .brand ul li { border-bottom: none; padding: 0; } /* Reset padding/border cho thẻ li bên trong */
+    .brand ul li a { font-size: 0.95rem; color: #666; padding: 5px 0; display: inline-block; }
+    .brand ul li a:hover { padding-left: 8px; color: #d10000; }
+
+    /* Slider - Section 2 */
+    .slider-section { flex: 1; max-width: 740px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .slider { width: 100%; height: 460px; position: relative; overflow: hidden; }
+    .slides { display: flex; width: 400%; height: 100%; transition: transform 0.6s ease; }
+    .slide { width: 25%; height: 100%; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Banner Right - Section 3 */
+    .right-banner { width: 350px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .right-banner img { width: 100%; height: 460px; object-fit: cover; }
+
+    /* ------------------- SECTION: SẢN PHẨM BÁN CHẠY ------------------- */
+    .best-selling-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .best-gaming-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 8px 8px 0 0; border-bottom: 2px solid #f0f0f0; }
+    .section-title { font-size: 1.4rem; color: #ff3040; font-weight: bold; }
+    .sub-categories { display: flex; list-style: none; gap: 12px; }
+    .sub-categories a { text-decoration: none; color: #555; font-size: 0.9rem; padding: 7px 16px; border-radius: 20px; background: #f0f2f5; transition: all 0.3s; font-weight: 500; }
+    .sub-categories a:hover, .sub-categories a.active { background: #d10000; color: white; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .product-card { border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px; transition: all 0.3s; text-align: center; background: white; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #d10000; }
+    .product-img { width: 100%; height: 180px; margin-bottom: 15px; }
+    .product-img img { width: 100%; height: 100%; object-fit: contain; }
+    .product-name { font-size: 0.95rem; font-weight: 600; color: #333; margin-bottom: 12px; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-price { color: #d0021b; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
+    .buy-btn { width: 100%; background: white; color: #d10000; border: 1px solid #d10000; padding: 8px 0; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .buy-btn:hover { background: #d10000; color: white; }
+/* banner quảng cáo giữa section */
+    .ad-banner-full {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      margin-top: 50px;
+      margin-bottom: 50px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: #1a1a1a; /* Thêm nền màu tối cho hợp với banner */
+    }
+
+    .ad-banner-full img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain; /* Đổi thành contain để ảnh AI hiện đầy đủ chữ */
+      max-height: 400px; /* Tăng chiều cao để banner nhìn rõ hơn */
+    }
+/* banner quảng cáo */
+    .product-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .news-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+      background: white; padding: 25px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .news-card {
+      border: 1px solid #eee; border-radius: 10px; overflow: hidden;
+      transition: all 0.3s; cursor: pointer; background: white;
+    }
+    .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: #007bff; }
+    .news-img { width: 100%; height: 220px; overflow: hidden; }
+    .news-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .news-card:hover .news-img img { transform: scale(1.05); }
+    .news-info { padding: 15px; }
+    .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .news-date { font-size: 0.85rem; color: #888; display: flex; align-items: center; gap: 5px; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container { flex-direction: column; }
+      .sidebar, .slider-section, .right-banner { width: 100%; max-width: 100%; }
+      .has-submenu .submenu { left: 0; width: 100%; top: 100%; position: relative; transform: none; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-header { flex-direction: column; gap: 15px; text-align: center; }
+    }
+

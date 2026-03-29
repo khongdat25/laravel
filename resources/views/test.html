@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laptop Store - Thế giới Công nghệ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    /* ------------------- CÀI ĐẶT CHUNG ------------------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+
+    /* ------------------- NAVBAR ------------------- */
+    .navbar { background: #1a1a1a; color: white; padding: 0 40px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .logo { font-size: 1.9rem; font-weight: bold; color: #d10000; cursor: pointer; }
+    .nav-menu { display: flex; gap: 32px; list-style: none; }
+    .nav-menu a { color: white; text-decoration: none; font-size: 1.05rem; transition: color 0.2s; }
+    .nav-menu a:hover { color: #d10000; }
+    .search-bar { display: flex; align-items: center; background: #333; border-radius: 30px; padding: 8px 16px; width: 340px; transition: width 0.3s; }
+    .search-bar:hover { width: 380px; }
+    .search-bar input { background: transparent; border: none; outline: none; color: white; font-size: 1rem; width: 100%; margin-left: 8px; }
+    .nav-icons { display: flex; gap: 24px; font-size: 1.3rem; }
+    .nav-icons a { color: white; text-decoration: none; position: relative; }
+    .cart-count { position: absolute; top: -8px; right: -10px; background: #ff3040; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* ------------------- MAIN CONTENT (S1, S2, S3) ------------------- */
+    .main-container { max-width: 1400px; margin: 30px auto; padding: 0 30px; display: flex; gap: 18px; align-items: flex-start; }
+
+    /* Sidebar - Section 1 */
+    .sidebar { width: 250px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 20px; position: relative; }
+    .sidebar h2 { font-size: 1.3rem; margin-bottom: 18px; color: #1a1a1a; border-bottom: 2px solid #d10000; padding-bottom: 10px; }
+    .category-list { list-style: none; }
+    .category-list li { padding: 12px 0; border-bottom: 1px solid #eee; }
+    .category-list a { text-decoration: none; color: #444; display: block; transition: 0.2s; }
+    .category-list a:hover { color: #d10000; padding-left: 5px; }
+
+    /* Submenu Popup (CSS được tối ưu cho JS) */
+    .has-submenu .submenu {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 250px;
+      width: 820px;
+      min-height: 100%;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 30px;
+      z-index: 9999;
+      transform: translateX(10px);
+      transition: all 0.3s ease;
+    }
+
+    /* Cây cầu tàng hình nối giữa chữ và menu để chống trượt chuột */
+    .has-submenu .submenu::before { content: ""; position: absolute; top: 0; left: -15px; width: 15px; height: 100%; background: transparent; }
+    .brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+    .brand strong { display: block; font-size: 1.1rem; border-bottom: 2px solid #00d1b2; margin-bottom: 10px; padding-bottom: 5px; }
+    .brand ul { list-style: none; }
+    .brand ul li { border-bottom: none; padding: 0; } /* Reset padding/border cho thẻ li bên trong */
+    .brand ul li a { font-size: 0.95rem; color: #666; padding: 5px 0; display: inline-block; }
+    .brand ul li a:hover { padding-left: 8px; color: #d10000; }
+
+    /* Slider - Section 2 */
+    .slider-section { flex: 1; max-width: 740px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .slider { width: 100%; height: 460px; position: relative; overflow: hidden; }
+    .slides { display: flex; width: 400%; height: 100%; transition: transform 0.6s ease; }
+    .slide { width: 25%; height: 100%; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Banner Right - Section 3 */
+    .right-banner { width: 350px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .right-banner img { width: 100%; height: 460px; object-fit: cover; }
+
+    /* ------------------- SECTION: SẢN PHẨM BÁN CHẠY ------------------- */
+    .best-selling-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .best-gaming-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 8px 8px 0 0; border-bottom: 2px solid #f0f0f0; }
+    .section-title { font-size: 1.4rem; color: #ff3040; font-weight: bold; }
+    .sub-categories { display: flex; list-style: none; gap: 12px; }
+    .sub-categories a { text-decoration: none; color: #555; font-size: 0.9rem; padding: 7px 16px; border-radius: 20px; background: #f0f2f5; transition: all 0.3s; font-weight: 500; }
+    .sub-categories a:hover, .sub-categories a.active { background: #d10000; color: white; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .product-card { border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px; transition: all 0.3s; text-align: center; background: white; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: #d10000; }
+    .product-img { width: 100%; height: 180px; margin-bottom: 15px; }
+    .product-img img { width: 100%; height: 100%; object-fit: contain; }
+    .product-name { font-size: 0.95rem; font-weight: 600; color: #333; margin-bottom: 12px; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-price { color: #d0021b; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
+    .buy-btn { width: 100%; background: white; color: #d10000; border: 1px solid #d10000; padding: 8px 0; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .buy-btn:hover { background: #d10000; color: white; }
+/* banner quảng cáo giữa section */
+    .ad-banner-full {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      margin-top: 50px;
+      margin-bottom: 50px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: #1a1a1a; /* Thêm nền màu tối cho hợp với banner */
+    }
+
+    .ad-banner-full img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain; /* Đổi thành contain để ảnh AI hiện đầy đủ chữ */
+      max-height: 400px; /* Tăng chiều cao để banner nhìn rõ hơn */
+    }
+/* banner quảng cáo */
+    .product-section { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
+    .news-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+      background: white; padding: 25px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .news-card {
+      border: 1px solid #eee; border-radius: 10px; overflow: hidden;
+      transition: all 0.3s; cursor: pointer; background: white;
+    }
+    .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: #007bff; }
+    .news-img { width: 100%; height: 220px; overflow: hidden; }
+    .news-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .news-card:hover .news-img img { transform: scale(1.05); }
+    .news-info { padding: 15px; }
+    .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .news-date { font-size: 0.85rem; color: #888; display: flex; align-items: center; gap: 5px; }
+
+    /* ------------------- FOOTER ------------------- */
+    .footer-section { background: #1a1a1a; color: #ccc; padding: 60px 0 20px 0; margin-top: 50px; font-size: 0.95rem; }
+    .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+
+    .footer-col h3 { color: white; margin-bottom: 25px; font-size: 1.2rem; position: relative; padding-bottom: 10px; text-transform: uppercase; }
+    .footer-col h3::after { content: ""; position: absolute; left: 0; bottom: 0; width: 40px; height: 3px; background: #d10000; border-radius: 5px; }
+
+    .footer-logo { font-size: 2rem; font-weight: bold; color: #d10000; margin-bottom: 15px; display: inline-block; text-decoration: none; }
+    .footer-slogan { line-height: 1.6; margin-bottom: 20px; color: #aaa; }
+    .social-icons { display: flex; gap: 15px; }
+    .social-icons a { color: white; background: #333; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s; text-decoration: none; }
+    .social-icons a:hover { background: #d10000; transform: translateY(-3px); }
+
+    .contact-info p { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; line-height: 1.5; }
+    .contact-info i { color: #d10000; font-size: 1.1rem; margin-top: 3px; width: 20px; text-align: center; }
+
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 12px; }
+    .footer-col ul li a { color: #aaa; text-decoration: none; transition: 0.3s; display: inline-block; }
+    .footer-col ul li a:hover { color: #d10000; transform: translateX(5px); }
+
+    .payment-methods { display: flex; flex-wrap: wrap; gap: 10px; }
+    .payment-methods img { width: 50px; height: 32px; object-fit: contain; background: white; padding: 3px; border-radius: 4px; border: 1px solid #444; }
+
+    .footer-bottom { text-align: center; padding-top: 20px; margin-top: 40px; border-top: 1px solid #333; font-size: 0.9rem; color: #888; }
+
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container { flex-direction: column; }
+      .sidebar, .slider-section, .right-banner { width: 100%; max-width: 100%; }
+      .has-submenu .submenu { left: 0; width: 100%; top: 100%; position: relative; transform: none; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-header { flex-direction: column; gap: 15px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">LaptopStore</div>
+    <ul class="nav-menu">
+      <li><a href="#">Trang chủ</a></li>
+      <li><a href="#">Khuyến mãi</a></li>
+      <li><a href="#">Tin công nghệ</a></li>
+    </ul>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Bạn cần tìm laptop gì?">
+    </div>
+    <div class="nav-icons">
+      <a href="#"><i class="fas fa-shopping-cart"></i><span class="cart-count">3</span></a>
+      <a href="#"><i class="fas fa-user"></i></a>
+    </div>
+  </nav>
+
+  <div class="main-container">
+
+    <aside class="sidebar">
+      <h2>Danh mục</h2>
+      <ul class="category-list">
+
+        <li class="has-submenu">
+          <a href="#">Laptop Gaming <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <div class="submenu">
+            <div class="brand-grid">
+              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ROG Strix G16</a></li><li><a href="#">TUF Gaming A15</a></li><li><a href="#">ROG Zephyrus</a></li></ul></div>
+              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">Legion 5 Pro</a></li><li><a href="#">IdeaPad Gaming</a></li><li><a href="#">LOQ Series</a></li></ul></div>
+              <div class="brand"><strong>MSI</strong><ul><li><a href="#">Katana 15</a></li><li><a href="#">Cyborg 15</a></li><li><a href="#">Titan GT</a></li></ul></div>
+              <div class="brand"><strong>Gigabyte</strong><ul><li><a href="#">Aorus 15X</a></li><li><a href="#">G5 KF</a></li><li><a href="#">Aero 16</a></li></ul></div>
+              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Alienware m16</a></li><li><a href="#">Alienware x14</a></li><li><a href="#">Dell G15 / G16</a></li></ul></div>
+              <div class="brand"><strong>HP</strong><ul><li><a href="#">Omen 16</a></li><li><a href="#">Victus 15</a></li><li><a href="#">Victus 16</a></li></ul></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="has-submenu">
+          <a href="#">Laptop Văn phòng <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <div class="submenu">
+            <div class="brand-grid">
+              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ZenBook Series</a></li><li><a href="#">VivoBook Series</a></li><li><a href="#">ExpertBook</a></li></ul></div>
+              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">ThinkPad Series</a></li><li><a href="#">IdeaPad Slim</a></li><li><a href="#">ThinkBook</a></li></ul></div>
+              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Inspiron Series</a></li><li><a href="#">Vostro Series</a></li><li><a href="#">Latitude</a></li></ul></div>
+              <div class="brand"><strong>HP</strong><ul><li><a href="#">Pavilion Series</a></li><li><a href="#">Envy Series</a></li><li><a href="#">ProBook</a></li></ul></div>
+              <div class="brand"><strong>Acer</strong><ul><li><a href="#">Swift Series</a></li><li><a href="#">Aspire Series</a></li></ul></div>
+              <div class="brand"><strong>MSI</strong><ul><li><a href="#">Modern Series</a></li><li><a href="#">Prestige Series</a></li></ul></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="has-submenu">
+          <a href="#">MacBook <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <div class="submenu">
+            <div class="brand-grid">
+              <div class="brand"><strong>MacBook Air</strong><ul><li><a href="#">MacBook Air M1</a></li><li><a href="#">MacBook Air M2</a></li><li><a href="#">MacBook Air M3</a></li></ul></div>
+              <div class="brand"><strong>MacBook Pro 14"</strong><ul><li><a href="#">MacBook Pro M3</a></li><li><a href="#">MacBook Pro M3 Pro</a></li><li><a href="#">MacBook Pro M3 Max</a></li></ul></div>
+              <div class="brand"><strong>MacBook Pro 16"</strong><ul><li><a href="#">MacBook Pro M3 Pro</a></li><li><a href="#">MacBook Pro M3 Max</a></li></ul></div>
+              <div class="brand"><strong>Mac Desktop</strong><ul><li><a href="#">iMac 24-inch</a></li><li><a href="#">Mac mini</a></li><li><a href="#">Mac Studio</a></li></ul></div>
+              <div class="brand"><strong>Phụ kiện Apple</strong><ul><li><a href="#">Magic Mouse</a></li><li><a href="#">Magic Keyboard</a></li><li><a href="#">AirPods</a></li></ul></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="has-submenu">
+          <a href="#">Laptop Đồ họa <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <div class="submenu">
+            <div class="brand-grid">
+              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Dell XPS Series</a></li><li><a href="#">Dell Precision</a></li></ul></div>
+              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ProArt Studiobook</a></li><li><a href="#">ZenBook Pro</a></li></ul></div>
+              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">ThinkPad P Series</a></li><li><a href="#">Yoga Pro</a></li></ul></div>
+              <div class="brand"><strong>HP</strong><ul><li><a href="#">ZBook Series</a></li><li><a href="#">Envy x360</a></li></ul></div>
+              <div class="brand"><strong>Acer</strong><ul><li><a href="#">ConceptD Series</a></li></ul></div>
+              <div class="brand"><strong>Apple</strong><ul><li><a href="#">MacBook Pro M-Series</a></li></ul></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="has-submenu">
+          <a href="#">Phụ kiện <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <div class="submenu">
+            <div class="brand-grid">
+              <div class="brand"><strong>Chuột máy tính</strong><ul><li><a href="#">Logitech</a></li><li><a href="#">Razer</a></li><li><a href="#">Corsair</a></li></ul></div>
+              <div class="brand"><strong>Bàn phím</strong><ul><li><a href="#">Bàn phím cơ Akko</a></li><li><a href="#">Keychron</a></li><li><a href="#">DareU</a></li></ul></div>
+              <div class="brand"><strong>Tai nghe</strong><ul><li><a href="#">Sony</a></li><li><a href="#">HyperX</a></li><li><a href="#">JBL</a></li></ul></div>
+              <div class="brand"><strong>Balo - Túi xách</strong><ul><li><a href="#">Túi chống sốc</a></li><li><a href="#">Balo Laptop</a></li></ul></div>
+              <div class="brand"><strong>Cổng chuyển đổi</strong><ul><li><a href="#">Hub UGREEN</a></li><li><a href="#">Hub Baseus</a></li></ul></div>
+              <div class="brand"><strong>Khác</strong><ul><li><a href="#">Đế tản nhiệt</a></li><li><a href="#">Lót chuột</a></li></ul></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <section class="slider-section">
+      <div class="slider">
+        <div class="slides" id="slides">
+          <div class="slide"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=900&auto=format" alt="Banner 1"></div>
+          <div class="slide"><img src="https://images.unsplash.com/photo-1611078489935-0cb4c2497a00?w=900&auto=format" alt="Banner 2"></div>
+          <div class="slide"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=900&auto=format" alt="Banner 3"></div>
+          <div class="slide"><img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=900&auto=format" alt="Banner 4"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-banner">
+      <img src="https://images.unsplash.com/photo-1588109273901-15e94e39e6d3?w=400&auto=format&fit=crop&q=80" alt="Ads">
+    </aside>
+  </div>
+
+  <section class="best-selling-section">
+    <div class="section-header">
+      <div class="header-left">
+        <h2 class="section-title"><i class="fas fa-fire"></i> SẢN PHẨM BÁN CHẠY</h2>
+      </div>
+      <div class="header-right">
+        <ul class="sub-categories">
+          <li><a href="#" class="active">tất cả</a></li>
+          <li><a href="#">Laptop Văn Phòng</a></li>
+          <li><a href="#">Laptop Văn Phòng</a></li>
+          <li><a href="#">MacBook</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">Lenovo Legion 5 Pro 2024 i9-14900HX</h3>
+          <p class="product-price">35.990.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">ASUS ROG Strix G16 G614J RTX 4060</h3>
+          <p class="product-price">32.450.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">MacBook Air M3 13 inch 2024 - 16GB RAM</h3>
+          <p class="product-price">27.890.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">Dell XPS 13 9340 Core Ultra 7 2024</h3>
+          <p class="product-price">42.100.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="ad-banner-full">
+    <img src="/storage/app/public/image/image.png" alt="Siêu sale giảm giá cho sinh viên">
+  </section>
+
+<!-- laptop gaming -->
+  <section class="best-gaming-section">
+    <div class="section-header">
+      <div class="header-left">
+        <h2 class="section-title"><i class="fas fa-fire"></i> SẢN PHẨM GAMING</h2>
+      </div>
+      <div class="header-right">
+        <ul class="sub-categories">
+          <li><a href="#" class="active">tất cả</a></li>
+          <li><a href="#">LENOVO</a></li>
+          <li><a href="#">ASUS</a></li>
+          <li><a href="#">Dell</a></li>
+          <li><a href="#">ACER</a></li>
+          <li><a href="#">MSI</a></li>
+          <li><a href="#">GIGABYTE</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">Lenovo Legion 5 Pro 2024 i9-14900HX</h3>
+          <p class="product-price">35.990.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">ASUS ROG Strix G16 G614J RTX 4060</h3>
+          <p class="product-price">32.450.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">MacBook Air M3 13 inch 2024 - 16GB RAM</h3>
+          <p class="product-price">27.890.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="Laptop"></div>
+        <div class="product-info">
+          <h3 class="product-name">Dell XPS 13 9340 Core Ultra 7 2024</h3>
+          <p class="product-price">42.100.000₫</p>
+          <button class="buy-btn">Mua ngay</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="product-section">
+    <div class="section-header">
+      <div class="header-left">
+        <h2 class="section-title title-news"><i class="far fa-newspaper"></i> TIN TỨC CÔNG NGHỆ</h2>
+      </div>
+      <div class="header-right">
+        <a href="#" style="color: #007bff; text-decoration: none; font-weight: 500;">Xem tất cả <i class="fas fa-angle-right"></i></a>
+      </div>
+    </div>
+
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop" alt="Tin tức 1">
+        </div>
+        <div class="news-info">
+          <h3 class="news-title">Intel ra mắt vi xử lý Core Ultra thế hệ mới, tích hợp NPU xử lý AI cực mạnh</h3>
+          <p class="news-date"><i class="far fa-clock"></i> 12 Tháng 3, 2026</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&auto=format&fit=crop" alt="Tin tức 2">
+        </div>
+        <div class="news-info">
+          <h3 class="news-title">Đánh giá chi tiết MacBook Pro M4: Sức mạnh vượt trội, pin dùng liên tục 22 giờ</h3>
+          <p class="news-date"><i class="far fa-clock"></i> 10 Tháng 3, 2026</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img">
+          <img src="https://images.unsplash.com/photo-1542393545-10f5cde2c810?w=600&auto=format&fit=crop" alt="Tin tức 3">
+        </div>
+        <div class="news-info">
+          <h3 class="news-title">Top 5 Laptop Gaming đáng mua nhất dành cho sinh viên IT năm 2026</h3>
+          <p class="news-date"><i class="far fa-clock"></i> 08 Tháng 3, 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer-section">
+    <div class="footer-container">
+
+      <div class="footer-col">
+        <a href="#" class="footer-logo">LaptopStore</a>
+        <p class="footer-slogan">Hệ thống bán lẻ Laptop uy tín hàng đầu Việt Nam. Cam kết hàng chính hãng, giá tốt nhất thị trường cùng dịch vụ bảo hành chuẩn 5 sao.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col contact-info">
+        <h3>Thông tin liên hệ</h3>
+        <p><i class="fas fa-map-marker-alt"></i> 123 Đường Công Nghệ, Quận 1, TP. Hồ Chí Minh</p>
+        <p><i class="fas fa-phone-alt"></i> Hotline: 1800 1234 (Miễn phí)</p>
+        <p><i class="fas fa-envelope"></i> cskh@laptopstore.vn</p>
+        <p><i class="fas fa-headset"></i> Hỗ trợ kỹ thuật: 1800 5678</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Danh mục sản phẩm</h3>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Laptop Gaming</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Laptop Văn Phòng</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> MacBook & iMac</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Laptop Đồ Họa</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Linh kiện & Phụ kiện</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Phương thức thanh toán</h3>
+        <p>Chúng tôi hỗ trợ đa dạng các hình thức thanh toán an toàn và tiện lợi nhất cho bạn.</p>
+        <div class="payment-methods">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Mastercard">
+          <img src="https://developers.momo.vn/v3/assets/images/square-8c08a00f550e40a2efafea4a005b1232.png" alt="MoMo">
+          <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc/logo-vnpay.zip/Logo%20VNPAY/logo-VNPAY-1.png" alt="VNPay">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/JCB_logo.svg/1200px-JCB_logo.svg.png" alt="JCB">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 LaptopStore. All rights reserved. Thiết kế và phát triển với ♥️
+    </div>
+  </footer>
+
+  <script>
+    // 1. Slider Logic
+    let currentSlide = 0;
+    const slides = document.getElementById('slides');
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % 4;
+      slides.style.transform = `translateX(-${currentSlide * 25}%)`;
+    }, 4000);
+
+    // 2. Logic Smart Submenu CHO TẤT CẢ DANH MỤC
+    // Dùng querySelectorAll để lấy danh sách tất cả các thẻ li có class has-submenu
+    const submenuItems = document.querySelectorAll('.has-submenu');
+
+    submenuItems.forEach(item => {
+      const submenu = item.querySelector('.submenu');
+      let hideTimeout;
+
+      if (submenu) {
+        // Hàm mở popup
+        const showSubmenu = () => {
+          clearTimeout(hideTimeout);
+          // Đảm bảo các submenu khác đang mở sẽ bị ẩn đi để tránh chồng chéo
+          document.querySelectorAll('.submenu').forEach(sub => {
+            if(sub !== submenu) {
+              sub.style.visibility = 'hidden';
+              sub.style.opacity = '0';
+              sub.style.transform = 'translateX(10px)';
+            }
+          });
+
+          submenu.style.visibility = 'visible';
+          submenu.style.opacity = '1';
+          submenu.style.transform = 'translateX(0)';
+        };
+
+        // Hàm đóng popup có độ trễ
+        const hideSubmenu = () => {
+          hideTimeout = setTimeout(() => {
+            submenu.style.visibility = 'hidden';
+            submenu.style.opacity = '0';
+            submenu.style.transform = 'translateX(10px)';
+          }, 250);
+        };
+
+        // Gắn sự kiện hover cho từng item và submenu tương ứng của nó
+        item.addEventListener('mouseenter', showSubmenu);
+        item.addEventListener('mouseleave', hideSubmenu);
+        submenu.addEventListener('mouseenter', showSubmenu);
+        submenu.addEventListener('mouseleave', hideSubmenu);
+      }
+    });
+  </script>
+
+</body>
+</html>
