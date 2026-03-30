@@ -5,6 +5,7 @@
 @push('styles')
     {{-- Gọi file CSS dành riêng cho trang chủ --}}
     @vite('resources/css/pages/home.css')
+    @vite('resources/css/layouts/footer.css')
 @endpush
 
 @section('content')
@@ -13,75 +14,33 @@
     <aside class="sidebar">
       <h2>Danh mục</h2>
       <ul class="category-list">
-
+        @foreach($categories as $category)
         <li class="has-submenu">
-          <a href="/san-pham">Laptop Gaming <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
+          <a href="/san-pham?category={{ $category->id }}">{{ $category->name }} @if($brands->count() > 0)<i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i>@endif</a>
+          @if($brands->count() > 0)
           <div class="submenu">
             <div class="brand-grid">
-              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ROG Strix G16</a></li><li><a href="#">TUF Gaming A15</a></li><li><a href="#">ROG Zephyrus</a></li></ul></div>
-              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">Legion 5 Pro</a></li><li><a href="#">IdeaPad Gaming</a></li><li><a href="#">LOQ Series</a></li></ul></div>
-              <div class="brand"><strong>MSI</strong><ul><li><a href="#">Katana 15</a></li><li><a href="#">Cyborg 15</a></li><li><a href="#">Titan GT</a></li></ul></div>
-              <div class="brand"><strong>Gigabyte</strong><ul><li><a href="#">Aorus 15X</a></li><li><a href="#">G5 KF</a></li><li><a href="#">Aero 16</a></li></ul></div>
-              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Alienware m16</a></li><li><a href="#">Alienware x14</a></li><li><a href="#">Dell G15 / G16</a></li></ul></div>
-              <div class="brand"><strong>HP</strong><ul><li><a href="#">Omen 16</a></li><li><a href="#">Victus 15</a></li><li><a href="#">Victus 16</a></li></ul></div>
+              @foreach($brands as $brand)
+                @php
+                  // Lấy các sản phẩm thuộc danh mục và hãng này
+                  $categoryBrandProducts = $brand->products->where('category_id', $category->id);
+                @endphp
+                @if($categoryBrandProducts->count() > 0)
+                <div class="brand">
+                  <strong><a href="/san-pham?category={{ $category->id }}&brand={{ $brand->id }}" style="color: inherit; text-decoration: none;">{{ $brand->name }}</a></strong>
+                  <ul>
+                    @foreach($categoryBrandProducts->take(4) as $prod)
+                    <li><a href="/san-pham/{{ $prod->id }}" title="{{ $prod->name }}">{{ \Illuminate\Support\Str::limit($prod->name, 25) }}</a></li>
+                    @endforeach
+                  </ul>
+                </div>
+                @endif
+              @endforeach
             </div>
           </div>
+          @endif
         </li>
-
-        <li class="has-submenu">
-          <a href="/admin/categories">Laptop Văn phòng <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
-          <div class="submenu">
-            <div class="brand-grid">
-              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ZenBook Series</a></li><li><a href="#">VivoBook Series</a></li><li><a href="#">ExpertBook</a></li></ul></div>
-              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">ThinkPad Series</a></li><li><a href="#">IdeaPad Slim</a></li><li><a href="#">ThinkBook</a></li></ul></div>
-              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Inspiron Series</a></li><li><a href="#">Vostro Series</a></li><li><a href="#">Latitude</a></li></ul></div>
-              <div class="brand"><strong>HP</strong><ul><li><a href="#">Pavilion Series</a></li><li><a href="#">Envy Series</a></li><li><a href="#">ProBook</a></li></ul></div>
-              <div class="brand"><strong>Acer</strong><ul><li><a href="#">Swift Series</a></li><li><a href="#">Aspire Series</a></li></ul></div>
-              <div class="brand"><strong>MSI</strong><ul><li><a href="#">Modern Series</a></li><li><a href="#">Prestige Series</a></li></ul></div>
-            </div>
-          </div>
-        </li>
-
-        <li class="has-submenu">
-          <a href="#">MacBook <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
-          <div class="submenu">
-            <div class="brand-grid">
-              <div class="brand"><strong>MacBook Air</strong><ul><li><a href="#">MacBook Air M1</a></li><li><a href="#">MacBook Air M2</a></li><li><a href="#">MacBook Air M3</a></li></ul></div>
-              <div class="brand"><strong>MacBook Pro 14"</strong><ul><li><a href="#">MacBook Pro M3</a></li><li><a href="#">MacBook Pro M3 Pro</a></li><li><a href="#">MacBook Pro M3 Max</a></li></ul></div>
-              <div class="brand"><strong>MacBook Pro 16"</strong><ul><li><a href="#">MacBook Pro M3 Pro</a></li><li><a href="#">MacBook Pro M3 Max</a></li></ul></div>
-              <div class="brand"><strong>Mac Desktop</strong><ul><li><a href="#">iMac 24-inch</a></li><li><a href="#">Mac mini</a></li><li><a href="#">Mac Studio</a></li></ul></div>
-              <div class="brand"><strong>Phụ kiện Apple</strong><ul><li><a href="#">Magic Mouse</a></li><li><a href="#">Magic Keyboard</a></li><li><a href="#">AirPods</a></li></ul></div>
-            </div>
-          </div>
-        </li>
-
-        <li class="has-submenu">
-          <a href="#">Laptop Đồ họa <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
-          <div class="submenu">
-            <div class="brand-grid">
-              <div class="brand"><strong>Dell</strong><ul><li><a href="#">Dell XPS Series</a></li><li><a href="#">Dell Precision</a></li></ul></div>
-              <div class="brand"><strong>ASUS</strong><ul><li><a href="#">ProArt Studiobook</a></li><li><a href="#">ZenBook Pro</a></li></ul></div>
-              <div class="brand"><strong>Lenovo</strong><ul><li><a href="#">ThinkPad P Series</a></li><li><a href="#">Yoga Pro</a></li></ul></div>
-              <div class="brand"><strong>HP</strong><ul><li><a href="#">ZBook Series</a></li><li><a href="#">Envy x360</a></li></ul></div>
-              <div class="brand"><strong>Acer</strong><ul><li><a href="#">ConceptD Series</a></li></ul></div>
-              <div class="brand"><strong>Apple</strong><ul><li><a href="#">MacBook Pro M-Series</a></li></ul></div>
-            </div>
-          </div>
-        </li>
-
-        <li class="has-submenu">
-          <a href="#">Phụ kiện <i class="fas fa-chevron-right" style="float:right; font-size: 0.8rem; margin-top:5px;"></i></a>
-          <div class="submenu">
-            <div class="brand-grid">
-              <div class="brand"><strong>Chuột máy tính</strong><ul><li><a href="#">Logitech</a></li><li><a href="#">Razer</a></li><li><a href="#">Corsair</a></li></ul></div>
-              <div class="brand"><strong>Bàn phím</strong><ul><li><a href="#">Bàn phím cơ Akko</a></li><li><a href="#">Keychron</a></li><li><a href="#">DareU</a></li></ul></div>
-              <div class="brand"><strong>Tai nghe</strong><ul><li><a href="#">Sony</a></li><li><a href="#">HyperX</a></li><li><a href="#">JBL</a></li></ul></div>
-              <div class="brand"><strong>Balo - Túi xách</strong><ul><li><a href="#">Túi chống sốc</a></li><li><a href="#">Balo Laptop</a></li></ul></div>
-              <div class="brand"><strong>Cổng chuyển đổi</strong><ul><li><a href="#">Hub UGREEN</a></li><li><a href="#">Hub Baseus</a></li></ul></div>
-              <div class="brand"><strong>Khác</strong><ul><li><a href="#">Đế tản nhiệt</a></li><li><a href="#">Lót chuột</a></li></ul></div>
-            </div>
-          </div>
-        </li>
+        @endforeach
       </ul>
     </aside>
 

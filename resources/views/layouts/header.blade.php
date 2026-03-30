@@ -24,7 +24,11 @@
     </div>
     <div class="nav-icons">
       <a href="#"><i class="fas fa-shopping-cart"></i><span class="cart-count">3</span></a>
+      
       @auth
+      <span class="user-name" style="margin: 0 10px; font-weight: 500; color: #ffffffff;">
+          Chào, {{ Auth::user()->name }}
+      </span>
           <form method="POST" action="{{ route('logout') }}" style="display:inline;" id="logout-form">
               @csrf
               <a href="#" onclick="document.getElementById('logout-form').submit();" title="Đăng xuất" style="margin-right: 10px;">

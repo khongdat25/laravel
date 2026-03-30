@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/css/admin/dashboard.css',
                 'resources/css/admin/sidebar.css',
+                'resources/css/layouts/footer.css',
             ],
             refresh: true,
         }),

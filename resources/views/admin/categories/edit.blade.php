@@ -19,7 +19,7 @@
         <div class="form-card">
             <h2><i class="fas fa-edit"></i> Sửa Danh mục</h2>
 
-            <form action="{{ route('categories.update', $category->id) }}" method="POST">
+            <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
