@@ -13,8 +13,8 @@ class HomeController extends Controller
 {
     public function index() {
         $categories = Category::with('children')->whereNull('parent_id')->get();
-        $products = Product::latest('id')->take(6)->get(); // Lấy 6 sản phẩm mới nhất
-        $bestSellingProducts = Product::orderBy('sold', 'desc')->take(4)->get(); // Lấy 6 sản phẩm bán chạy nhất
+        $products = Product::with(['variants', 'mainImage'])->latest('id')->take(6)->get(); 
+        $bestSellingProducts = Product::with(['variants', 'mainImage'])->orderBy('sold', 'desc')->take(4)->get(); 
         $brands = Brand::with('products')->get(); // Lấy tất cả thương hiệu kèm sản phẩm
         return view('user.home', compact('categories', 'products', 'bestSellingProducts', 'brands'));
     }

@@ -14,10 +14,22 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('image')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->text('description');
-            $table->foreignId('category_id')->constrained('categories');
+            $table->string('slug')->unique();
+            
+            // Image FK (featured image thumbnail) - Column only
+            $table->unsignedBigInteger('image_id')->nullable(); 
+            
+            $table->text('description')->nullable();
+            
+            // FKs
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
+            
+            // ERD Fields
+            $table->string('category_slug')->nullable();
+            $table->string('status')->default('active');
+            $table->integer('sold')->default(0);
+            
             $table->timestamps();
         });
     }

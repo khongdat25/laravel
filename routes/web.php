@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,11 +33,14 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard/index', fn() => view('admin.dashboard.index'))->name('dashboard');
     Route::resource('categories', CategoryController::class);
+    Route::resource('products', ProductController::class);
 });
 
 Route::get('/san-pham', function () {
     $brands = Brand::all();
     return view('user.category', compact('brands'));
 });
+
+
 
 require __DIR__.'/auth.php';

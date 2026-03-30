@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('sold')->default(0)->after('price');
+        Schema::create('attributes', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); // e.g. "CPU", "RAM", "VGA", "SSD", "Screen", "OS"
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('sold');
-        });
+        Schema::dropIfExists('attributes');
     }
 };

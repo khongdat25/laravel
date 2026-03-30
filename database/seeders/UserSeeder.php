@@ -13,8 +13,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->truncate();
-
         DB::table('users')->insert([
             [
                 'name'            => 'Admin',
@@ -25,8 +23,6 @@ class UserSeeder extends Seeder
                 'birthday'        => '1990-01-01',
                 'gender'          => 'male',
                 'role'            => 'admin',
-                'reset_token'     => null,
-                'reset_token_exp' => null,
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],
@@ -39,8 +35,6 @@ class UserSeeder extends Seeder
                 'birthday'        => '1995-05-15',
                 'gender'          => 'female',
                 'role'            => 'user',
-                'reset_token'     => null,
-                'reset_token_exp' => null,
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ],

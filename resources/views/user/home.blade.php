@@ -79,15 +79,21 @@
       @foreach($bestSellingProducts as $item)
       <div class="product-card">
           <div class="product-img">
-              @if($item->image)
-                  <img src="{{ $item->image }}" alt="{{ $item->name }}">
+              @if($item->mainImage)
+                  <img src="{{ $item->mainImage->image_path }}" alt="{{ $item->name }}">
               @else
                   <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="{{ $item->name }}">
               @endif
           </div>
           <div class="product-info">
               <h3 class="product-name" style="height: 48px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $item->name }}</h3>
-              <p class="product-price">{{ number_format($item->price) }}₫</p>
+              <p class="product-price">
+                  @if($item->variants->count() > 0)
+                      {{ number_format($item->variants->min('price')) }}₫
+                  @else
+                      Liên hệ
+                  @endif
+              </p>
               <a href="/san-pham/{{ $item->id }}" style="text-decoration: none;"><button class="buy-btn" style="width: 100%;">Xem chi tiết</button></a>
           </div>
       </div>

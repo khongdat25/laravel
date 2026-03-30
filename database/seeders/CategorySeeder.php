@@ -14,11 +14,11 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         DB::table('categories')->insert([
-            ['name' => 'Laptop Gaming'],
-            ['name' => 'Laptop Văn phòng'],
-            ['name' => 'MacBook'],
-            ['name' => 'Laptop Đồ họa'],    
-            ['name' => 'Phụ kiện']
+            ['name' => 'Laptop Gaming', 'slug' => 'laptop-gaming'],
+            ['name' => 'Laptop Văn phòng', 'slug' => 'laptop-van-phong'],
+            ['name' => 'MacBook', 'slug' => 'macbook'],
+            ['name' => 'Laptop Đồ họa', 'slug' => 'laptop-do-hoa'],    
+            ['name' => 'Phụ kiện', 'slug' => 'phu-kien']
         ]);
     }
 }
