@@ -80,7 +80,7 @@
       <div class="product-card">
           <div class="product-img">
               @if($item->mainImage)
-                  <img src="{{ $item->mainImage->image_path }}" alt="{{ $item->name }}">
+                  <img src="{{ asset('storage/' . $item->mainImage->image_path) }}" alt="{{ $item->name }}">
               @else
                   <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="{{ $item->name }}">
               @endif

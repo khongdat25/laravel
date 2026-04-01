@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 class User extends Controller
 {
     public function login() {
-        return view('user.login');
+        return view('auth.login');
     }
     public function register() {
-        return view('user.register');
+        return view('auth.register');
     }
 }
     

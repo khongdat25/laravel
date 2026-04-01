@@ -56,8 +56,81 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // Logic for handling variants and multiple images
-        return redirect()->route('admin.products.index')->with('success', 'Đang phát triển tính năng lưu sản phẩm phức tạp...');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'brand_id' => 'required|exists:brands,id',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric|min:0',
+            'original_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $category = Category::findOrFail($request->category_id);
+
+        // 1. Create base product
+        $product = Product::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name) . '-' . time(),
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+            'category_slug' => $category->slug,
+            'status' => 'active',
+            'sold' => 0,
+        ]);
+
+        // 2. Upload and Handle Images
+        $firstImageId = null;
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $file) {
+                $path = $file->store('products', 'public');
+                $productImage = \App\Models\ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $path,
+                ]);
+
+                if ($index === 0) {
+                    $firstImageId = $productImage->id;
+                }
+            }
+            
+            if ($firstImageId) {
+                $product->update(['image_id' => $firstImageId]);
+            }
+        }
+
+        // 3. Create Default Variant
+        $variant = ProductVariant::create([
+            'product_id' => $product->id,
+            'price' => $request->price,
+            'original_price' => $request->original_price,
+            'stock' => $request->stock,
+            'sku' => strtoupper(Str::random(10)),
+        ]);
+
+        // 4. Handle Attributes
+        $attributeInputs = [
+            'VGA' => $request->vga,
+            'CPU' => $request->cpu,
+            'RAM' => $request->ram,
+            'SSD' => $request->ssd,
+            'Screen' => $request->screen,
+            'OS' => $request->os,
+        ];
+
+        foreach ($attributeInputs as $attrName => $attrValue) {
+            if (!empty($attrValue)) {
+                $attribute = Attribute::firstOrCreate(['name' => $attrName]);
+                $value = AttributeValue::firstOrCreate([
+                    'attribute_id' => $attribute->id,
+                    'value' => $attrValue
+                ]);
+                $variant->attributeValues()->attach($value->id);
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
     /**

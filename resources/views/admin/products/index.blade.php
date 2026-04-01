@@ -68,7 +68,7 @@
             <tr>
                 <td>
                     @if($product->mainImage)
-                        <img src="{{ $product->mainImage->image_path }}" class="product-img" alt="{{ $product->name }}">
+                        <img src="{{ asset('storage/' . $product->mainImage->image_path) }}" class="product-img" alt="{{ $product->name }}">
                     @else
                         <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=80" class="product-img" alt="no-image">
                     @endif

@@ -48,6 +48,10 @@
                 <label>Giá gốc (VNĐ)</label>
                 <input type="number" name="original_price" placeholder="38990000">
             </div>
+            <div class="form-group">
+                <label>Số lượng kho <span style="color:red;">*</span></label>
+                <input type="number" name="stock" placeholder="10" required>
+            </div>
         </div>
 
         <!-- ==================== UPLOAD HÌNH ẢNH ==================== -->
