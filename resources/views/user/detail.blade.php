@@ -3,6 +3,8 @@
 @section('title', 'Chi tiết sản phẩm - Laptop Store')
 
 @push('styles')
+    @vite('resources/css/layouts/header.css')
+    @vite('resources/css/layouts/footer.css')
     @vite('resources/css/pages/detail.css')
 @endpush
 
@@ -10,41 +12,78 @@
   <div class="breadcrumb">
     <a href="/"><i class="fas fa-home"></i> Trang chủ</a> 
     <span>/</span> 
-    <a href="/san-pham">Laptop Gaming</a> 
-    <span>/</span> 
-    <span>MacBook Pro 14" M4 Pro</span>
+    @if($product->category)
+        <a href="/san-pham?category={{ $product->category->id }}">{{ $product->category->name }}</a> 
+        <span>/</span> 
+    @endif
+    <span>{{ $product->name }}</span>
   </div>
 
   <div class="product-detail-container">
     <!-- Ảnh sản phẩm -->
     <div class="product-images">
-      <img id="mainImg" src="https://reviewed-com-res.cloudinary.com/image/fetch/s--Tdfd_mAt--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1707514980229/AppleMacBookPro14M3ReviewFrontRight2.jpg" alt="MacBook Pro 14 M4 Pro" class="main-image">
+      @if($product->mainImage)
+        <img id="mainImg" src="{{ asset('storage/' . $product->mainImage->image_path) }}" alt="{{ $product->name }}" class="main-image">
+      @else
+        <img id="mainImg" src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=800&auto=format" alt="{{ $product->name }}" class="main-image">
+      @endif
       <div class="thumbnails">
-        <img src="https://reviewed-com-res.cloudinary.com/image/fetch/s--Tdfd_mAt--/b_white,c_limit,cs_srgb,f_auto,fl_progressive.strip_profile,g_center,h_668,q_auto,w_1187/https://reviewed-production.s3.amazonaws.com/1707514980229/AppleMacBookPro14M3ReviewFrontRight2.jpg" alt="Front" class="thumbnail active" onclick="changeImage(this)">
-        <img src="https://support.apple.com/library/APPLE/APPLECARE_ALLGEOS/SP850/macbook-pro-14-in-m4-pro-m4-max-202410-gallery1.jpg" alt="Side" class="thumbnail" onclick="changeImage(this)">
-        <img src="https://support.apple.com/library/APPLE/APPLECARE_ALLGEOS/SP850/macbook-pro-14-in-m4-pro-m4-max-202410-gallery2.jpg" alt="Keyboard" class="thumbnail" onclick="changeImage(this)">
-        <img src="https://support.apple.com/library/APPLE/APPLECARE_ALLGEOS/SP850/macbook-pro-14-in-m4-pro-m4-max-202410-gallery3.jpg" alt="Ports" class="thumbnail" onclick="changeImage(this)">
+        @if($product->images->count() > 0)
+            @foreach($product->images as $index => $image)
+                <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $product->name }} {{ $index }}" class="thumbnail {{ $index == 0 ? 'active' : '' }}" onclick="changeImage(this)">
+            @endforeach
+        @elseif($product->mainImage)
+            <img src="{{ asset('storage/' . $product->mainImage->image_path) }}" alt="{{ $product->name }} main" class="thumbnail active" onclick="changeImage(this)">
+        @endif
       </div>
     </div>
 
     <!-- Thông tin sản phẩm -->
     <div class="product-info">
-      <h1 class="product-title">MacBook Pro 14" M4 Pro (2025) - 24GB RAM / 1TB SSD</h1>
+      <h1 class="product-title">{{ $product->name }}</h1>
       
       <!-- Rating -->
       <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
           <span style="color: #ff9800; font-size: 1.2rem;">⭐⭐⭐⭐⭐</span>
-          <span style="color: #666;">(128 đánh giá)</span>
+          <span style="color: #666;">({{ number_format(rand(50, 500)) }} đánh giá)</span>
       </div>
 
-      <div class="price">59.990.000 ₫ <span class="old-price">62.990.000 ₫</span></div>
-      <p class="description">Siêu phẩm sáng tạo với chip M4 Pro mạnh mẽ, màn Liquid Retina XDR 120Hz, pin trâu lên đến 22 giờ. Hoàn hảo cho edit video, code, thiết kế đồ họa chuyên nghiệp.</p>
-
-      <div style="margin:20px 0; line-height: 1.8; color: #444;">
-        <strong><i class="fas fa-palette" style="width: 20px; color: #d10000;"></i> Màu sắc:</strong> Space Black / Silver<br>
-        <strong><i class="fas fa-shield-alt" style="width: 20px; color: #d10000;"></i> Bảo hành:</strong> 12 tháng chính hãng Apple Việt Nam<br>
-        <strong><i class="fas fa-box" style="width: 20px; color: #d10000;"></i> Tình trạng:</strong> Mới 100% - Full Box
+      <div class="price">
+        @if($selectedVariant)
+            @php
+                $vAtt = [];
+                foreach($selectedVariant->attributeValues as $av) {
+                    $vAtt[$av->attribute->name] = $av->value;
+                }
+                // Thêm cấu hình vào sau tên máy cho rõ ràng
+                $vFullName = $product->name . ' - ' . ($vAtt['CPU'] ?? '') . ' / ' . ($vAtt['RAM'] ?? '') . ' / ' . ($vAtt['SSD'] ?? '');
+            @endphp
+            <span id="currentPrice">{{ number_format($selectedVariant->price) }} ₫</span>
+            @if($selectedVariant->original_price > $selectedVariant->price)
+                <span class="old-price">{{ number_format($selectedVariant->original_price) }} ₫</span>
+            @endif
+            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                Tình trạng: <strong>{{ $selectedVariant->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}</strong> ({{ $selectedVariant->stock }} sản phẩm)
+            </div>
+            
+            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 0.9rem;">
+                <strong>Cấu hình chi tiết:</strong>
+                <ul style="margin: 5px 0 0 15px; padding: 0;">
+                    <li>CPU: {{ $vAtt['CPU'] ?? 'Theo máy' }}</li>
+                    <li>RAM: {{ $vAtt['RAM'] ?? 'Theo máy' }}</li>
+                    <li>VGA: {{ $vAtt['VGA'] ?? 'Bản chuẩn' }}</li>
+                    <li>SSD: {{ $vAtt['SSD'] ?? 'Theo máy' }}</li>
+                </ul>
+            </div>
+        @else
+            Liên hệ
+        @endif
       </div>
+      <div class="description">{!! $product->description !!}</div>
+
+        @if($product->brand)
+          <strong><i class="fas fa-tag" style="width: 20px; color: #d10000;"></i> Thương hiệu:</strong> {{ $product->brand->name }}<br>
+        @endif
 
       <!-- Delivery Info -->
       <div style="padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50; font-size: 0.95rem;">
@@ -53,24 +92,79 @@
           <p style="margin: 5px 0;"><strong>✓ Hỗ trợ 24/7</strong> sau bán hàng</p>
       </div>
 
+      @if($selectedVariant)
+      <form action="{{ route('cart.add') }}" method="POST">
+        @csrf
+        <input type="hidden" name="variant_id" value="{{ $selectedVariant->id }}">
+        <input type="hidden" name="quantity" value="1" min="1">
+        <div class="buttons">
+          <button type="submit" class="btn buy-now"><i class="fas fa-shopping-bag"></i> Mua ngay</button>
+          <button type="submit" class="btn add-cart"><i class="fas fa-cart-plus"></i> Thêm vào giỏ</button>
+        </div>
+      </form>
+      @else
       <div class="buttons">
-        <button class="btn buy-now"><i class="fas fa-shopping-bag"></i> Mua ngay</button>
-        <button class="btn add-cart"><i class="fas fa-cart-plus"></i> Thêm vào giỏ</button>
+        <button class="btn add-cart" disabled style="background: #ccc; cursor: not-allowed;">Hết hàng</button>
       </div>
+      @endif
     </div>
   </div>
 
   <!-- Thông số kỹ thuật -->
   <div class="details">
     <h2 class="details-section-title">Thông số kỹ thuật chi tiết</h2>
-    <table>
-      <tr><th>Chip</th><td>Apple M4 Pro (14-core CPU: 10 performance + 4 efficiency, 20-core GPU, 16-core Neural Engine)</td></tr>
-      <tr><th>RAM</th><td>24GB unified memory</td></tr>
-      <tr><th>Lưu trữ</th><td>1TB SSD</td></tr>
-      <tr><th>Màn hình</th><td>14.2-inch Liquid Retina XDR, 3024x1964, 120Hz ProMotion</td></tr>
-      <tr><th>Pin</th><td>Lên đến 22 giờ xem video</td></tr>
-      <tr><th>Cổng</th><td>3x Thunderbolt 5, HDMI, SDXC, MagSafe 3</td></tr>
-      <tr><th>Trọng lượng</th><td>1.60 kg</td></tr>
+    <table class="specs-table">
+        @php $hasSpec = false; @endphp
+        
+        <!-- Thông số của phiên bản hiện tại -->
+        @if($selectedVariant)
+            @php 
+                $vAt = [];
+                foreach($selectedVariant->attributeValues as $av) {
+                    $vAt[$av->attribute->name] = $av->value;
+                }
+                $hasSpec = true;
+            @endphp
+            <tr>
+                <th>Vi xử lý (CPU)</th>
+                <td>{{ $vAt['CPU'] ?? 'Theo máy' }}</td>
+            </tr>
+            <tr>
+                <th>Bộ nhớ RAM</th>
+                <td>{{ $vAt['RAM'] ?? 'Theo máy' }}</td>
+            </tr>
+            <tr>
+                <th>Card đồ họa (VGA)</th>
+                <td>{{ $vAt['VGA'] ?? 'Bản chuẩn' }}</td>
+            </tr>
+            <tr>
+                <th>Ổ cứng (SSD)</th>
+                <td>{{ $vAt['SSD'] ?? 'Theo máy' }}</td>
+            </tr>
+        @endif
+
+        <!-- Thông số tĩnh từ product_specifications -->
+        @if($product->specifications->count() > 0)
+            @foreach($product->specifications as $spec)
+                @php $hasSpec = true; @endphp
+                <tr>
+                    <th>{{ $spec->name }}</th>
+                    <td>{{ $spec->value }}</td>
+                </tr>
+            @endforeach
+        @endif
+        
+        @if($product->brand)
+            @php $hasSpec = true; @endphp
+            <tr>
+                <th>Thương hiệu</th>
+                <td>{{ $product->brand->name }}</td>
+            </tr>
+        @endif
+        
+        @if(!$hasSpec)
+            <tr><td colspan="2" style="text-align: center; padding: 20px; color: #888;">Thông số kỹ thuật đang được cập nhật...</td></tr>
+        @endif
     </table>
   </div>
 
@@ -127,45 +221,73 @@
   <div class="similar-products">
     <h2 class="similar-products-title">Sản phẩm tương tự</h2>
     <div class="detail-product-grid">
+      @foreach($similarProducts as $simProduct)
       <div class="detail-product-card">
-        <img src="https://i.rtings.com/assets/products/achdBcky/apple-macbook-pro-16-m3-2023/design-medium.jpg?format=auto" alt="MacBook Pro 16 M4 Max" class="detail-product-img">
+        @if($simProduct->mainImage)
+            <img src="{{ asset('storage/' . $simProduct->mainImage->image_path) }}" alt="{{ $simProduct->name }}" class="detail-product-img">
+        @else
+            <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="{{ $simProduct->name }}" class="detail-product-img">
+        @endif
         <div class="detail-product-info">
-          <div class="detail-product-name">MacBook Pro 16" M4 Max 48GB/1TB</div>
-          <div class="detail-product-price">89.990.000 ₫</div>
-          <a href="#" class="btn-detail">Xem chi tiết</a>
+          <div class="detail-product-name">{{ $simProduct->name }}</div>
+          <div class="detail-product-price">
+            @if($simProduct->variants->count() > 0)
+                {{ number_format($simProduct->variants->min('price')) }} ₫
+            @else
+                Liên hệ
+            @endif
+          </div>
+          <a href="/san-pham/{{ $simProduct->id }}" class="btn-detail">Xem chi tiết</a>
         </div>
       </div>
-
-      <div class="detail-product-card">
-        <img src="https://images.unsplash.com/photo-1611078489935-0cb4c2497a00?w=500" alt="ASUS Zenbook Pro" class="detail-product-img">
-        <div class="detail-product-info">
-          <div class="detail-product-name">ASUS Zenbook Pro 14 OLED (Intel Ultra 9)</div>
-          <div class="detail-product-price">45.990.000 ₫</div>
-          <a href="#" class="btn-detail">Xem chi tiết</a>
-        </div>
-      </div>
-
-      <div class="detail-product-card">
-        <img src="https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/dell-premium/da14250/media-gallery/platinum/touch/notebook-dell-premium-da14250t-sl-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=1086&qlt=100,1&resMode=sharp2&size=1086,804&chrss=full" alt="Dell XPS 14" class="detail-product-img">
-        <div class="detail-product-info">
-          <div class="detail-product-name">Dell XPS 14 2026 (Intel Core Ultra 7)</div>
-          <div class="detail-product-price">48.990.000 ₫</div>
-          <a href="#" class="btn-detail">Xem chi tiết</a>
-        </div>
-      </div>
-
-      <div class="detail-product-card">
-        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" alt="MacBook Air M5" class="detail-product-img">
-        <div class="detail-product-info">
-          <div class="detail-product-name">MacBook Air 15" M5 16GB/512GB</div>
-          <div class="detail-product-price">34.990.000 ₫</div>
-          <a href="#" class="btn-detail">Xem chi tiết</a>
-        </div>
-      </div>
+      @endforeach
+      @if($similarProducts->isEmpty())
+        <p style="grid-column: 1/-1; text-align: center; color: #888;">Chưa có sản phẩm tương tự.</p>
+      @endif
     </div>
   </div>
 @endsection
 
 @push('scripts')
     @vite('resources/js/pages/detail.js')
+    <script>
+        function changeImage(img) {
+            document.getElementById('mainImg').src = img.src;
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            img.classList.add('active');
+        }
+        document.querySelector('.add-cart').closest('form').addEventListener('submit', function(e){
+          e.preventDefault();
+          let formData = new FormData(this);
+          //AJAX
+          fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          })
+          .then(response => {
+            if(!response.ok && response.status != 401){
+              throw new Error('có lỗi xảy ra ');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if(data.success){
+              document.getElementById('cart-count').textContent = data.totalCount;
+              alert(data.message);
+            }else {
+              alert(data.message);
+              if(data.message == 'Bạn cần đăng nhập mới được thêm vào giỏ hàng'){
+                window.location.href = '/login';
+              }
+            }
+          })
+          .catch(error => console.log('Error:', error));
+          
+        });
+            
+    </script>
 @endpush

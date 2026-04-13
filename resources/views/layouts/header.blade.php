@@ -18,17 +18,27 @@
       <li><a href="#">Về chúng tôi</a></li>
       <li><a href="#">Tin công nghệ</a></li>
     </ul>
-    <div class="search-bar">
+    <form action="{{ route('search') }}" method="GET" class="search-bar">
       <i class="fas fa-search"></i>
-      <input type="text" placeholder="Bạn cần tìm laptop gì?">
-    </div>
+      <input type="text" name="query"  placeholder="Bạn cần tìm laptop gì?" value="{{ request('query') }}">
+      <button type="submit" style="background:none; border:none; cursor:pointer">
+        <i class="fas fa-search"></i>
+
+      </button>
+    </form>
     <div class="nav-icons">
-      <a href="#"><i class="fas fa-shopping-cart"></i><span class="cart-count">3</span></a>
+      <a href="/cart"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cart-count">{{ auth()->check() ? \App\Models\Cart::where('user_id', auth()->id())->sum('quantity') : 0 }}</span></a>
       
       @auth
-      <span class="user-name" style="margin: 0 10px; font-weight: 500; color: #ffffffff;">
-          Chào, {{ Auth::user()->name }}
-      </span>
+      <a href="{{ route('profile.index') }}" class="user-profile-link" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: white; margin: 0 10px;">
+          @php
+              $avatarPath = Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=d10000&color=fff';
+          @endphp
+          <img src="{{ $avatarPath }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid white;">
+          <span class="user-name" style="font-weight: 500;">
+              {{ Auth::user()->name }}
+          </span>
+      </a>
           <form method="POST" action="{{ route('logout') }}" style="display:inline;" id="logout-form">
               @csrf
               <a href="#" onclick="document.getElementById('logout-form').submit();" title="Đăng xuất" style="margin-right: 10px;">

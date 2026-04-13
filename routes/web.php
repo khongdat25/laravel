@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\users\HomeController;
+use App\Http\Controllers\users\CartController;
+use App\Http\Controllers\users\CheckoutController;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Route;
@@ -24,9 +26,15 @@ Route::get('/', [HomeController::class, 'index']);
 
 // Route dành cho user đã đăng nhập
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Checkout Routes
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/order-success/{id}', [CheckoutController::class, 'success'])->name('order.success');
 });
 
 // Route dành cho admin (phải đăng nhập + phải là admin)
@@ -41,6 +49,10 @@ Route::get('/san-pham', function () {
     return view('user.category', compact('brands'));
 });
 
-
-
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::delete('/cart/{id}', [CartController::class,'destroy'])->name('cart.destroy');
+Route::patch('/cart/update/{id}  ', [CartController::class,'update'])->name('cart.update');
+Route::get('/san-pham/{id}', [HomeController::class, 'detail']);
+Route::get('/search' , [HomeController::class,'search'])->name('search');
 require __DIR__.'/auth.php';

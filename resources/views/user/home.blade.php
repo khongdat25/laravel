@@ -77,24 +77,32 @@
 
     <div class="product-grid">
       @foreach($bestSellingProducts as $item)
+      @php
+          $p = $item->product;
+          $vAttrs = [];
+          foreach($item->attributeValues as $av) {
+              $vAttrs[$av->attribute->name] = $av->value;
+          }
+          $vName = $p->name . ' - ' . ($vAttrs['RAM'] ?? '') . ' / ' . ($vAttrs['SSD'] ?? '');
+      @endphp
       <div class="product-card">
           <div class="product-img">
-              @if($item->mainImage)
-                  <img src="{{ asset('storage/' . $item->mainImage->image_path) }}" alt="{{ $item->name }}">
+              @if($p->mainImage)
+                  <img src="{{ asset('storage/' . $p->mainImage->image_path) }}" alt="{{ $vName }}">
               @else
-                  <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="{{ $item->name }}">
+                  <img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="{{ $vName }}">
               @endif
           </div>
           <div class="product-info">
-              <h3 class="product-name" style="height: 48px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $item->name }}</h3>
+              <h3 class="product-name" style="height: 48px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" title="{{ $vName }}">
+                  {{ $vName }}
+              </h3>
               <p class="product-price">
-                  @if($item->variants->count() > 0)
-                      {{ number_format($item->variants->min('price')) }}₫
-                  @else
-                      Liên hệ
-                  @endif
+                  {{ number_format($item->price) }}₫
               </p>
-              <a href="/san-pham/{{ $item->id }}" style="text-decoration: none;"><button class="buy-btn" style="width: 100%;">Xem chi tiết</button></a>
+              <a href="/san-pham/{{ $p->id }}?v={{ $item->id }}" style="text-decoration: none;">
+                  <button class="buy-btn" style="width: 100%;">Xem chi tiết</button>
+              </a>
           </div>
       </div>
       @endforeach
@@ -124,38 +132,37 @@
     </div>
 
     <div class="product-grid">
+      {{-- Hiển thị các variant mới nhất --}}
+      @foreach($products as $item)
+      @php
+          $p = $item->product;
+          $vAttrs = [];
+          foreach($item->attributeValues as $av) {
+              $vAttrs[$av->attribute->name] = $av->value;
+          }
+          $vName = $p->name . ' - ' . ($vAttrs['RAM'] ?? '') . ' / ' . ($vAttrs['SSD'] ?? '');
+      @endphp
       <div class="product-card">
-        <div class="product-img"><img src="https://images.unsplash.com/photo-1603302576834-0d1a7099d69d?w=400&auto=format" alt="Laptop"></div>
-        <div class="product-info">
-          <h3 class="product-name">Lenovo Legion 5 Pro 2024 i9-14900HX</h3>
-          <p class="product-price">35.990.000₫</p>
-          <button class="buy-btn">Mua ngay</button>
-        </div>
+          <div class="product-img">
+              @if($p->mainImage)
+                  <img src="{{ asset('storage/' . $p->mainImage->image_path) }}" alt="{{ $vName }}">
+              @else
+                  <img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="{{ $vName }}">
+              @endif
+          </div>
+          <div class="product-info">
+              <h3 class="product-name" style="height: 48px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" title="{{ $vName }}">
+                  {{ $vName }}
+              </h3>
+              <p class="product-price">
+                  {{ number_format($item->price) }}₫
+              </p>
+              <a href="/san-pham/{{ $p->id }}?v={{ $item->id }}" style="text-decoration: none;">
+                  <button class="buy-btn" style="width: 100%;">Xem chi tiết</button>
+              </a>
+          </div>
       </div>
-      <div class="product-card">
-        <div class="product-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&auto=format" alt="Laptop"></div>
-        <div class="product-info">
-          <h3 class="product-name">ASUS ROG Strix G16 G614J RTX 4060</h3>
-          <p class="product-price">32.450.000₫</p>
-          <button class="buy-btn">Mua ngay</button>
-        </div>
-      </div>
-      <div class="product-card">
-        <div class="product-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format" alt="Laptop"></div>
-        <div class="product-info">
-          <h3 class="product-name">MacBook Air M3 13 inch 2024 - 16GB RAM</h3>
-          <p class="product-price">27.890.000₫</p>
-          <button class="buy-btn">Mua ngay</button>
-        </div>
-      </div>
-      <div class="product-card">
-        <div class="product-img"><img src="https://images.unsplash.com/photo-1588872657578-10efd656b5d9?w=400&auto=format" alt="Laptop"></div>
-        <div class="product-info">
-          <h3 class="product-name">Dell XPS 13 9340 Core Ultra 7 2024</h3>
-          <p class="product-price">42.100.000₫</p>
-          <button class="buy-btn">Mua ngay</button>
-        </div>
-      </div>
+      @endforeach
     </div>
   </section>
 

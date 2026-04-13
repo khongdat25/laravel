@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/admin/dashboard.css',
                 'resources/css/admin/sidebar.css',
                 'resources/css/layouts/footer.css',
+                'resources/css/layouts/header.css',
             ],
             refresh: true,
         }),
